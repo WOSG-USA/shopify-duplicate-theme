@@ -29,7 +29,19 @@ export const pullLiveTheme = async (
   folder: string
 ): Promise<void> => {
   await execShellCommand(
-    `shopify theme pull --live --path ${folder} --store ${store}`
+    `shopify theme pull --live --path ${folder} --store ${store} --only layout/* --only config/* --only locales/*`
+  )
+  await execShellCommand(
+    `shopify theme pull --live --path ${folder} --store ${store} --only templates/*`
+  )
+  await execShellCommand(
+    `shopify theme pull --live --path ${folder} --store ${store} --only sections/*`
+  )
+  await execShellCommand(
+    `shopify theme pull --live --path ${folder} --store ${store} --only snippets/*`
+  )
+  await execShellCommand(
+    `shopify theme pull --live --path ${folder} --store ${store} --only assets/*`
   )
 }
 
