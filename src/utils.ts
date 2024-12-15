@@ -32,7 +32,7 @@ export const pullLiveTheme = async (
     `shopify theme pull --live --path ${folder} --store ${store} --only layout/* --only config/* --only locales/*`
   )
   await execShellCommand(
-    `shopify theme pull --live --path ${folder} --store ${store} --only templates/*`
+    `shopify theme pull --live --path ${folder} --store ${store} --only templates/* --only templates/*/*`
   )
   await execShellCommand(
     `shopify theme pull --live --path ${folder} --store ${store} --only sections/*`
