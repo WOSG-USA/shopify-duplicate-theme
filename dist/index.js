@@ -115,7 +115,7 @@ const cleanRemoteFiles = (folder) => __awaiter(void 0, void 0, void 0, function*
 exports.cleanRemoteFiles = cleanRemoteFiles;
 const pullLiveTheme = (store, folder) => __awaiter(void 0, void 0, void 0, function* () {
     yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only layout/* --only config/* --only locales/*`);
-    yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only templates/*`);
+    yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only templates/* --only templates/*/*`);
     yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only sections/*`);
     yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only snippets/*`);
     yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only assets/*`);
@@ -136,6 +136,11 @@ const pushUnpublishedTheme = (store, folder, name) => __awaiter(void 0, void 0, 
     const response = yield execShellCommand(`shopify theme push --unpublished --path ${folder} --store ${store} --theme '${name}' --unpublished --ignore ${CONTEXT_BASED_TEMPLATE_REGEX} --json`);
     const responseString = response.toString();
     const responseJSON = JSON.parse(responseString);
+    const warning = responseJSON === null || responseJSON === void 0 ? void 0 : responseJSON.warning;
+    if (warning) {
+        (0, core_1.debug)(responseString);
+        throw new Error('Failed to create new theme');
+    }
     const themeID = ((_a = responseJSON === null || responseJSON === void 0 ? void 0 : responseJSON.theme) === null || _a === void 0 ? void 0 : _a.id) || (responseJSON === null || responseJSON === void 0 ? void 0 : responseJSON.id);
     if (!themeID) {
         (0, core_1.debug)(responseString);

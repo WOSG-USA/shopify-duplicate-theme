@@ -71,6 +71,11 @@ export const pushUnpublishedTheme = async (
 
   const responseString = response.toString()
   const responseJSON = JSON.parse(responseString)
+  const warning = responseJSON?.warning
+  if (warning) {
+    debug(responseString)
+    throw new Error('Failed to create new theme')
+  }
   const themeID = responseJSON?.theme?.id || responseJSON?.id
   if (!themeID) {
     debug(responseString)
