@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import {mkdirP} from '@actions/io'
 import {
   pullLiveTheme,
   cleanRemoteFiles,
@@ -18,6 +19,8 @@ async function run(): Promise<void> {
       required: true,
       trimWhitespace: true
     })
+
+    await mkdirP(TEMP_FOLDER)
 
     await pullLiveTheme(store, TEMP_FOLDER)
     const themeID = await pushUnpublishedTheme(

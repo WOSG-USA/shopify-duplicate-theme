@@ -40,6 +40,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
+const io_1 = __nccwpck_require__(436);
 const utils_1 = __nccwpck_require__(918);
 const TEMP_FOLDER = 'duplicate';
 function run() {
@@ -53,6 +54,7 @@ function run() {
                 required: true,
                 trimWhitespace: true
             });
+            yield (0, io_1.mkdirP)(TEMP_FOLDER);
             yield (0, utils_1.pullLiveTheme)(store, TEMP_FOLDER);
             const themeID = yield (0, utils_1.pushUnpublishedTheme)(store, TEMP_FOLDER, (0, utils_1.generateThemeNameForEnv)(env));
             core.setOutput('themeId', themeID);
@@ -114,11 +116,7 @@ const cleanRemoteFiles = (folder) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.cleanRemoteFiles = cleanRemoteFiles;
 const pullLiveTheme = (store, folder) => __awaiter(void 0, void 0, void 0, function* () {
-    yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only layout/* --only config/* --only locales/*`);
-    yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only templates/* --only templates/*/*`);
-    yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only sections/*`);
-    yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only snippets/*`);
-    yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store} --only assets/*`);
+    yield execShellCommand(`shopify theme pull --live --path ${folder} --store ${store}`);
 });
 exports.pullLiveTheme = pullLiveTheme;
 const CONTEXT_BASED_TEMPLATE_REGEX = /.*context.*\.json/;
