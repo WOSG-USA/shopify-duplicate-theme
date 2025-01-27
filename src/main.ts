@@ -4,6 +4,7 @@ import {
   pullLiveTheme,
   cleanRemoteFiles,
   pushUnpublishedTheme,
+  pushTargetTheme,
   generateThemeNameForEnv
 } from './utils'
 
@@ -15,6 +16,9 @@ async function run(): Promise<void> {
       trimWhitespace: true
     })
 
+    // Add new optional input for duplicating from Prod to an existing theme
+    const targetThemeId: string = core.getInput('theme')
+
     const env: string = core.getInput('env', {
       required: true,
       trimWhitespace: true
@@ -23,12 +27,21 @@ async function run(): Promise<void> {
     await mkdirP(TEMP_FOLDER)
 
     await pullLiveTheme(store, TEMP_FOLDER)
-    const themeID = await pushUnpublishedTheme(
-      store,
-      TEMP_FOLDER,
-      generateThemeNameForEnv(env)
-    )
-    core.setOutput('themeId', themeID)
+    if (targetThemeId) {
+      core.setOutput('themeId', targetThemeId)
+      await pushTargetTheme(
+        targetThemeId,
+        store,
+        TEMP_FOLDER
+      )
+    } else {
+      const themeID = await pushUnpublishedTheme(
+        store,
+        TEMP_FOLDER,
+        generateThemeNameForEnv(env)
+      )
+      core.setOutput('themeId', themeID)
+    }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   } finally {
