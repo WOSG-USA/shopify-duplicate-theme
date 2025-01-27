@@ -74,6 +74,18 @@ export const pushUnpublishedTheme = async (
   return themeID
 }
 
+export const pushTargetTheme = async (
+  theme: string,
+  store: string,
+  folder: string
+): Promise<string> => {
+  await execShellCommand(
+    `shopify theme push --theme ${theme} --path ${folder} --store ${store} --unpublished --ignore ${CONTEXT_BASED_TEMPLATE_REGEX} --json`
+  )
+  debug(`Push to existing theme: ${theme}`)
+  return theme
+}
+
 // Patterh for name: [{env}] Latest Snapshot {date is in format MM.DD.YY}
 export const generateThemeNameForEnv = (env: string): string => {
   const date = new Date()
