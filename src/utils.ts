@@ -80,7 +80,7 @@ export const pushTargetTheme = async (
   folder: string
 ): Promise<string> => {
   await execShellCommand(
-    `shopify theme push --theme ${theme} --path ${folder} --store ${store} --unpublished --ignore ${CONTEXT_BASED_TEMPLATE_REGEX} --json`
+    `shopify theme push --theme ${theme} --path ${folder} --store ${store} --ignore ${CONTEXT_BASED_TEMPLATE_REGEX} --json`
   )
   debug(`Push to existing theme: ${theme}`)
   return theme
