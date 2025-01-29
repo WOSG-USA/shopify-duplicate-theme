@@ -8,6 +8,9 @@ inputs:
   env:
     required: true
     description: 'Env Staging / Production used as Prefix'
+  theme:
+    required: false
+    description: 'Target Theme ID'
 runs:
   main: 'dist/index.js'
   using: 'node20'
