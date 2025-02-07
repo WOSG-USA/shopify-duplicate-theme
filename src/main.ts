@@ -17,7 +17,10 @@ async function run(): Promise<void> {
     })
 
     // Add new optional input for duplicating from Prod to an existing theme
-    const targetThemeId: string = core.getInput('theme')
+    const targetThemeId: string = core.getInput('theme', {
+      required: false,
+      trimWhitespace: true
+    })
 
     const env: string = core.getInput('env', {
       required: true,
@@ -27,13 +30,15 @@ async function run(): Promise<void> {
     await mkdirP(TEMP_FOLDER)
 
     await pullLiveTheme(store, TEMP_FOLDER)
-    if (targetThemeId) {
+
+    if (targetThemeId.length > 0) {
       core.setOutput('themeId', targetThemeId)
       await pushTargetTheme(
         targetThemeId,
         store,
         TEMP_FOLDER
       )
+      core.setOutput('themeId', targetThemeId)
     } else {
       const themeID = await pushUnpublishedTheme(
         store,
