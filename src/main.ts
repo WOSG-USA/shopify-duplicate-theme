@@ -33,11 +33,7 @@ async function run(): Promise<void> {
 
     if (targetThemeId.length > 0) {
       core.setOutput('themeId', targetThemeId)
-      await pushTargetTheme(
-        targetThemeId,
-        store,
-        TEMP_FOLDER
-      )
+      await pushTargetTheme(targetThemeId, store, TEMP_FOLDER)
       core.setOutput('themeId', targetThemeId)
     } else {
       const themeID = await pushUnpublishedTheme(
