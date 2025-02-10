@@ -50,14 +50,26 @@ function run() {
                 required: true,
                 trimWhitespace: true
             });
+            // Add new optional input for duplicating from Prod to an existing theme
+            const targetThemeId = core.getInput('theme', {
+                required: false,
+                trimWhitespace: true
+            });
             const env = core.getInput('env', {
                 required: true,
                 trimWhitespace: true
             });
             yield (0, io_1.mkdirP)(TEMP_FOLDER);
             yield (0, utils_1.pullLiveTheme)(store, TEMP_FOLDER);
-            const themeID = yield (0, utils_1.pushUnpublishedTheme)(store, TEMP_FOLDER, (0, utils_1.generateThemeNameForEnv)(env));
-            core.setOutput('themeId', themeID);
+            if (targetThemeId.length > 0) {
+                core.setOutput('themeId', targetThemeId);
+                yield (0, utils_1.pushTargetTheme)(targetThemeId, store, TEMP_FOLDER);
+                core.setOutput('themeId', targetThemeId);
+            }
+            else {
+                const themeID = yield (0, utils_1.pushUnpublishedTheme)(store, TEMP_FOLDER, (0, utils_1.generateThemeNameForEnv)(env));
+                core.setOutput('themeId', themeID);
+            }
         }
         catch (error) {
             if (error instanceof Error)
@@ -88,7 +100,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateThemeNameForEnv = exports.pushUnpublishedTheme = exports.pushContextBasedTemplate = exports.pullLiveTheme = exports.cleanRemoteFiles = exports.execShellCommand = void 0;
+exports.generateThemeNameForEnv = exports.pushTargetTheme = exports.pushUnpublishedTheme = exports.pushContextBasedTemplate = exports.pullLiveTheme = exports.cleanRemoteFiles = exports.execShellCommand = void 0;
 const core_1 = __nccwpck_require__(186);
 const io_1 = __nccwpck_require__(436);
 const child_process_1 = __nccwpck_require__(81);
@@ -149,6 +161,12 @@ const pushUnpublishedTheme = (store, folder, name) => __awaiter(void 0, void 0, 
     return themeID;
 });
 exports.pushUnpublishedTheme = pushUnpublishedTheme;
+const pushTargetTheme = (theme, store, folder) => __awaiter(void 0, void 0, void 0, function* () {
+    yield execShellCommand(`shopify theme push --theme ${theme} --path ${folder} --store ${store} --ignore ${CONTEXT_BASED_TEMPLATE_REGEX} --json`);
+    (0, core_1.debug)(`Push to existing theme: ${theme}`);
+    return theme;
+});
+exports.pushTargetTheme = pushTargetTheme;
 // Patterh for name: [{env}] Latest Snapshot {date is in format MM.DD.YY}
 const generateThemeNameForEnv = (env) => {
     const date = new Date();
